@@ -10,14 +10,24 @@ import Headings
 
 
 parseFile :: String -> [Heading]
-parseFile cntnt = map (flip parseHeading $ 1)
-                    $ allHeaders (prepareFile cntnt) 1
+parseFile cntnt = 
+    let finecontent = prepareFile cntnt
+        headings = map (flip parseHeading $ 1)
+                     $ allHeaders finecontent 1
+        filetags = getFiletags finecontent
+    in  map (addTags filetags) headings
 
 prepareFile :: String -> [T.Text]
 prepareFile = filter (not . T.null) -- empty lines are dangerous
             . map T.strip           -- whitespaces are not part of the content
             . T.lines               -- list are superior to work with
             . T.pack                -- T.Text is more performant
+
+getFiletags :: [T.Text] -> S.Set T.Text
+getFiletags ts =
+    let filetagcriterion = \line -> (T.pack "#+FILETAGS:") `T.isPrefixOf` line
+        relevant = head $ takeWhile filetagcriterion ts
+    in  getTags [T.tail . snd . (T.breakOn (T.singleton ' ')) $ relevant]
 
 -- | given the contents of a heading of level n as a list of strings,
 -- | parse the Heading
@@ -27,7 +37,7 @@ parseHeading cntnt n =
             splitWhile
             (\h -> (not (checkIfHeading h (n + 1))))
                 cntnt
-        thisTitle = head thisCntnt
+        thisTitle = T.dropWhile (\c -> or [(c == ' '), (c == '*')]) $ head thisCntnt
         withoutTitle = if length thisCntnt == 1 then [] else tail thisCntnt
         thisTags = getTags withoutTitle
         thisContent = getNonMeta withoutTitle

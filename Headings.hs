@@ -19,6 +19,10 @@ emptyHeading = Heading T.empty S.empty T.empty M.empty []
 addTag :: T.Text -> Heading -> Heading
 addTag t h = h { tags = S.insert t $ tags h }
 
+addTags :: S.Set T.Text -> Heading -> Heading
+addTags ts h | S.null ts   = h
+             | otherwise   = addTags (S.deleteMin ts) (addTag (S.findMin ts) h)
+
 removeTag :: T.Text -> Heading -> Heading
 removeTag t h = h { tags = S.delete t $ tags h }
 

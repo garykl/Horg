@@ -17,6 +17,7 @@
     problem solved by removing all empty lines.
 *** DONE PROPERTY parsing stucks
 *** TODO parse file headers
+**** DONE FILETAGS
 *** TODO dates
 *** TODO TODO states
 ** modifying
