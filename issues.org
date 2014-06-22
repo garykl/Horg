@@ -1,7 +1,9 @@
 #+FILETAGS: :test: 
 * Horg
   :program:
-  a haskell program for parsing org-mode files.
+  A haskell program for parsing org-mode files. An org-mode file is read an
+  a record is created from it. It contains the title, content, tags, 
+  properties and all subheadings.
 ** parsing
    :PROPERTIES:
    :myproperty: a property value
@@ -15,7 +17,11 @@
     problem solved by removing all empty lines.
 *** DONE PROPERTY parsing stucks
 *** TODO parse file headers
+*** TODO dates
+*** TODO TODO states
 ** modifying
+*** purpose
+    functionality of an agenda can be easily provided.
 *** DONE a traversal function is needed
     for considering different TODO states, filetags and categories. I'm going 
     to try to make in an instance of the traversable typeclass.
@@ -24,3 +30,10 @@
 ** Output
 *** JSON
 *** DOT
+*** Org-Mode
+    Using the the functionality of =modifying=, custom reports may be created 
+    and saved in other org-mode files. For example filtering with respect to 
+    some =property=. An application could be, to have a giant org-mode file, 
+    containing the logging of a program creation, with feature descriptions, 
+    issue tracking, also finished issues. A README file or an TODO file can 
+    then be provided.
