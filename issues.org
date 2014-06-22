@@ -19,7 +19,14 @@
 *** TODO parse file headers
 **** DONE FILETAGS
 *** TODO dates
-*** TODO TODO states
+*** DONE TODO states
+    implementation: if the first word of the title line is written in capital 
+    letters, it is used as state.
+    problems:
+    - it is not used, if it the title consists of only one word.
+    - unresolved issue: e.g. * JSON output. JSON would be a state in that 
+      case.
+
 ** modifying
 *** purpose
     functionality of an agenda can be easily provided.
@@ -28,6 +35,8 @@
     to try to make in an instance of the traversable typeclass.
     Update:
     I can't make it an instance, because I need parameterized data type!
+    Also, for tags, this is not useful, because tags are inherited into the 
+    subtrees anyway.
 ** Output
 *** JSON
 *** DOT

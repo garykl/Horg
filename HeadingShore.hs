@@ -33,18 +33,44 @@ getFiletags ts =
 -- | parse the Heading
 parseHeading :: [T.Text] -> Int -> Heading
 parseHeading cntnt n =
+
     let (thisCntnt, otherCntnt) =
             splitWhile
             (\h -> (not (checkIfHeading h (n + 1))))
                 cntnt
-        thisTitle = T.dropWhile (\c -> or [(c == ' '), (c == '*')]) $ head thisCntnt
         withoutTitle = if length thisCntnt == 1 then [] else tail thisCntnt
+
+        (thisTitle, thisState) = getTitleAndState thisCntnt
         thisTags = getTags withoutTitle
         thisContent = getNonMeta withoutTitle
         thisProperties = getProperties withoutTitle
         thisSubheadings = map (flip parseHeading $ n + 1)
                               (allHeaders otherCntnt (n + 1))
-    in Heading thisTitle thisTags thisContent thisProperties thisSubheadings
+
+    in emptyHeading {
+           title = thisTitle,
+           tags = thisTags,
+           content = thisContent,
+           state = thisState,
+           properties = thisProperties,
+           subheadings = thisSubheadings }
+
+getTitleAndState :: [T.Text] -> (T.Text, Maybe T.Text)
+getTitleAndState ts =
+    let raw = T.dropWhile (\c -> or [(c == ' '),
+                                     (c == '*')])
+                        $ head ts
+        firstWord = T.takeWhile (/= ' ') raw
+    in  if T.length firstWord == T.length raw
+            then (raw, Nothing)
+            else
+                if isUpper firstWord
+                  then (T.tail $ T.dropWhile (/= ' ') raw, Just firstWord)
+                  else (raw, Nothing)
+    where
+    isUpper :: T.Text -> Bool
+    isUpper t = t == T.toUpper t
+
 
 getProperties :: [T.Text] -> M.Map T.Text T.Text
 getProperties = propertyText2Property . getPropertyText
@@ -102,15 +128,20 @@ showHeading = T.unlines . showHeadingH
 
     showHeadingH :: Heading -> [T.Text]
     showHeadingH h = showTitle (title h)
-              ++ showTags (tags h)
-              ++ showProperties (properties h)
-              ++ showContent (content h)
-              ++ showSubheadings (subheadings h)
+                  ++ showState (state h)
+                  ++ showTags (tags h)
+                  ++ showProperties (properties h)
+                  ++ showContent (content h)
+                  ++ showSubheadings (subheadings h)
 
         where
 
         showTitle :: T.Text -> [T.Text]
         showTitle t = [T.append (T.pack "Title: ") t]
+
+        showState :: Maybe T.Text -> [T.Text]
+        showState Nothing = [T.pack "State:"]
+        showState (Just s) = [T.append (T.pack "State: ") s]
 
         showTags :: S.Set T.Text -> [T.Text]
         showTags ts = T.pack "Tags:" : S.elems ts
