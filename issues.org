@@ -1,0 +1,26 @@
+#+FILETAGS: :test: 
+* Horg
+  :program:
+  a haskell program for parsing org-mode files.
+** parsing
+   :PROPERTIES:
+   :myproperty: a property value
+   :anotherproperty: another property value
+   :END:
+*** DONE there are problem with T.head when an empty line follows the title
+    problem solved by removing all empty lines.
+*** DONE there is also a problem, when there is no line between to headings
+    the Data.List.Split module behaves strange, could break again in future
+*** DONE often there is a leading empty tag!
+    problem solved by removing all empty lines.
+*** DONE PROPERTY parsing stucks
+*** TODO parse file headers
+** modifying
+*** DONE a traversal function is needed
+    for considering different TODO states, filetags and categories. I'm going 
+    to try to make in an instance of the traversable typeclass.
+    Update:
+    I can't make it an instance, because I need parameterized data type!
+** Output
+*** JSON
+*** DOT
