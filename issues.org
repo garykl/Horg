@@ -9,16 +9,17 @@
    :myproperty: a property value
    :anotherproperty: another property value
    :END:
-*** DONE there are problem with T.head when an empty line follows the title
-    problem solved by removing all empty lines.
-*** DONE there is also a problem, when there is no line between to headings
-    the Data.List.Split module behaves strange, could break again in future
-*** DONE often there is a leading empty tag!
-    problem solved by removing all empty lines.
 *** DONE PROPERTY parsing stucks
-*** TODO parse file headers
+*** parse file headers
 **** DONE FILETAGS
 *** TODO dates
+    a date time library must be used here!
+**** TODO SCHEDULED
+**** TODO DEADLINE
+**** TODO CLOSED
+**** TODO LOGBOOK
+     very very similar to properties.
+**** TODO timestamps
 *** DONE TODO states
     implementation: if the first word of the title line is written in capital 
     letters, it is used as state.
@@ -47,3 +48,14 @@
     containing the logging of a program creation, with feature descriptions, 
     issue tracking, also finished issues. A README file or an TODO file can 
     then be provided.
+**** TODO showContent
+     must be modified in a way, such that line break occur only at spaces and 
+     line length does not exceed 80 chars.
+** bugs
+*** DONE often there is a leading empty tag!
+    problem solved by removing all empty lines.
+*** DONE there are problem with T.head when an empty line follows the title
+    problem solved by removing all empty lines.
+*** DONE there is also a problem, when there is no line between to headings
+    the Data.List.Split module behaves strange, could break again in future
+*** DONE head error when there is no file meta data

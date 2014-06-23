@@ -1,6 +1,6 @@
-module HeadingFilter where
+module Horg.Filter where
 
-import Headings
+import Horg.Heading
 
 data Filter = Filter (Heading -> Bool)
 

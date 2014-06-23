@@ -8,7 +8,7 @@ splitWhile f ll = let a = takeWhile f ll
                   in  (a, b)
 
 spacing :: Int -> T.Text
-spacing n = T.replicate (4 * n) $ T.singleton ' '
+spacing n = T.replicate n $ T.singleton ' '
 
 concatPairs :: [[a]] -> [[a]]
 concatPairs [] = []

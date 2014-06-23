@@ -1,4 +1,4 @@
-module HeadingShore where
+module Horg.Parse where
 
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -6,7 +6,7 @@ import qualified Data.Text as T
 import Data.List.Split (split, dropBlanks, dropDelims, whenElt)
 
 import Helpers (concatPairs, splitWhile, spacing)
-import Headings
+import Horg.Heading
 
 
 parseFile :: String -> [Heading]
@@ -26,8 +26,13 @@ prepareFile = filter (not . T.null) -- empty lines are dangerous
 getFiletags :: [T.Text] -> S.Set T.Text
 getFiletags ts =
     let filetagcriterion = \line -> (T.pack "#+FILETAGS:") `T.isPrefixOf` line
-        relevant = head $ takeWhile filetagcriterion ts
-    in  getTags [T.tail . snd . (T.breakOn (T.singleton ' ')) $ relevant]
+        relevant = takeWhile filetagcriterion ts
+    in  if null relevant
+            then S.empty
+            else getTags [T.tail
+                        . snd
+                        . (T.breakOn (T.singleton ' '))
+                        $ head relevant]
 
 -- | given the contents of a heading of level n as a list of strings,
 -- | parse the Heading
@@ -121,44 +126,6 @@ filterTag = filter tagCondition
 unfilterTag :: [T.Text] -> [T.Text]
 unfilterTag = filter $ not . tagCondition
 
-showHeading :: Heading -> T.Text
-showHeading = T.unlines . showHeadingH
-
-    where
-
-    showHeadingH :: Heading -> [T.Text]
-    showHeadingH h = showTitle (title h)
-                  ++ showState (state h)
-                  ++ showTags (tags h)
-                  ++ showProperties (properties h)
-                  ++ showContent (content h)
-                  ++ showSubheadings (subheadings h)
-
-        where
-
-        showTitle :: T.Text -> [T.Text]
-        showTitle t = [T.append (T.pack "Title: ") t]
-
-        showState :: Maybe T.Text -> [T.Text]
-        showState Nothing = [T.pack "State:"]
-        showState (Just s) = [T.append (T.pack "State: ") s]
-
-        showTags :: S.Set T.Text -> [T.Text]
-        showTags ts = T.pack "Tags:" : S.elems ts
-
-        showContent :: T.Text -> [T.Text]
-        showContent c = T.pack "Content:" : T.lines c
-
-        showProperties :: M.Map T.Text T.Text -> [T.Text]
-        showProperties m = T.pack "Properties:" :
-                            M.elems (M.mapWithKey showProperty m)
-            where showProperty :: T.Text -> T.Text -> T.Text
-                  showProperty k v = T.concat [k, (T.pack ": "), v]
-
-        showSubheadings :: [Heading] -> [T.Text]
-        showSubheadings hs = map (\l -> T.append (spacing 1) l)
-                         (foldr (++) []
-                         $ map showHeadingH hs)
 
 -- | True if line is a header, False if it is not.
 checkIfHeading :: T.Text -> Int -> Bool
