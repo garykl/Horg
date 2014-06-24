@@ -50,6 +50,8 @@
     sort for tags in first place. There will be many items per tags, which can 
     be sorted by another criterion.
 ** Output
+*** TODO generalize
+    try to uniform the output creation mechanism, for plugin writers
 *** JSON
 *** DOT
     the collect function may also be used for generating all the edges and 
