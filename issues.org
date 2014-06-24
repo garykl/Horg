@@ -51,6 +51,7 @@
 ** Output
 *** JSON
 *** DOT
+**** TODO get all used tags in a heading
 *** Org-Mode
     Using the the functionality of =modifying=, custom reports may be created 
     and saved in other org-mode files. For example filtering with respect to 

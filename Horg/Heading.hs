@@ -24,7 +24,13 @@ addTags :: S.Set T.Text -> Heading -> Heading
 addTags ts h | S.null ts   = h
              | otherwise   = addTags (S.deleteMin ts) (addTag (S.findMin ts) h)
 
---
+
+collect :: (Heading -> a) -> Heading -> [a]
+collect c h = c h : foldl (++) [] (map (collect c) (subheadings h))
+
+collectTags :: Heading -> S.Set T.Text
+collectTags h = S.unions $ collect tags h
+
 -- | traverse a heading, apply a function f to it and all its subheadings.
 -- | the provided function should not change the subheadings of a heading.
 -- | The resulting behavior would be much to complex to understand.

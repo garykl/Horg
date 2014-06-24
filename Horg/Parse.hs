@@ -105,7 +105,8 @@ getTags ts =
     if null (filterTag ts)
         then S.empty
         else let relevant = T.unpack . head . filterTag $ ts
-             in  if relevant == ":PROPERTIES:"
+             in  if or [relevant == ":PROPERTIES:",
+                        relevant == ":LOGBOOK:"]
                     then S.empty
                     else S.fromList $ map T.pack
                        $ split (dropBlanks . dropDelims $ whenElt (==':'))
