@@ -1,4 +1,3 @@
-#+FILETAGS: :test: 
 * Horg
   :program:
   A haskell program for parsing org-mode files. An org-mode file is read an
