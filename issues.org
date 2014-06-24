@@ -8,6 +8,7 @@
 *** DONE PROPERTY parsing stucks
 *** parse file headers
 **** DONE FILETAGS
+**** TODO category
 *** TODO dates
     a date time library must be used here!
 **** TODO SCHEDULED
@@ -51,7 +52,27 @@
 ** Output
 *** JSON
 *** DOT
-**** TODO get all used tags in a heading
+    the collect function may also be used for generating all the edges and 
+    nodes, needed for graphviz input.
+**** DONE get all used tags in a heading
+     the collect function was used for that purpose.
+**** TODO sophisticated configuration
+     all the configuration can also be done at the level of the headings. 
+     Seems to be the superior approach at the moment.
+     - shall contents be shown?
+       that could be realized as a traverse, removing contents.
+**** Nodes
+     - header
+     - content
+     - tag
+     - (categories)
+     - (certain properties)
+**** Edges
+     - header to subheader
+     - tag to header
+     - header to content
+     - (category to header)
+     - (header to certain property)
 *** Org-Mode
     Using the the functionality of =modifying=, custom reports may be created 
     and saved in other org-mode files. For example filtering with respect to 
