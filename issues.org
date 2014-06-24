@@ -5,10 +5,6 @@
   a record is created from it. It contains the title, content, tags, 
   properties and all subheadings.
 ** parsing
-   :PROPERTIES:
-   :myproperty: a property value
-   :anotherproperty: another property value
-   :END:
 *** DONE PROPERTY parsing stucks
 *** parse file headers
 **** DONE FILETAGS
@@ -38,6 +34,20 @@
     I can't make it an instance, because I need parameterized data type!
     Also, for tags, this is not useful, because tags are inherited into the 
     subtrees anyway.
+** filter
+*** TODO title
+    search for infixes
+*** TODO content
+    search for infixes
+** TODO sorting
+*** TODO certain dates
+*** TODO title?
+*** TODO tags
+*** TODO content length
+*** TODO properties
+*** TODO multi layer sorting
+    sort for tags in first place. There will be many items per tags, which can 
+    be sorted by another criterion.
 ** Output
 *** JSON
 *** DOT
@@ -48,9 +58,13 @@
     containing the logging of a program creation, with feature descriptions, 
     issue tracking, also finished issues. A README file or an TODO file can 
     then be provided.
-**** TODO showContent
+**** DONE showContent
      must be modified in a way, such that line break occur only at spaces and 
      line length does not exceed 80 chars.
+***** solution
+      do not makes line breaks, as suggested above! I replaced 
+      Data.Text.concat with Data.Text.unlines, so that line break of the 
+      original documents are preserved.
 ** bugs
 *** DONE often there is a leading empty tag!
     problem solved by removing all empty lines.

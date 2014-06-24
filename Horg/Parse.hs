@@ -5,7 +5,7 @@ import qualified Data.Set as S
 import qualified Data.Text as T
 import Data.List.Split (split, dropBlanks, dropDelims, whenElt)
 
-import Helpers (concatPairs, splitWhile, spacing)
+import Helpers (concatPairs, splitWhile)
 import Horg.Heading
 
 
@@ -98,7 +98,7 @@ getProperties = propertyText2Property . getPropertyText
                        $ ts
 
 getNonMeta :: [T.Text] -> T.Text
-getNonMeta = T.concat . (dropWhile (\c -> ':' == (T.head . T.strip) c))
+getNonMeta = T.unlines . (dropWhile (\c -> ':' == (T.head . T.strip) c))
 
 getTags :: [T.Text] -> S.Set T.Text
 getTags ts =
