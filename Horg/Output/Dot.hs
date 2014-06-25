@@ -21,9 +21,9 @@ showHeadings hs = T.concat $ [T.pack "digraph G {\nlayout=dot\nrankdir=LR\n"]
 
 
 showHeading :: Heading -> T.Text
-showHeading h = T.concat [showNodes (T.pack "[shape=ellipse]") $ allTags h,
-                          showNodes (T.pack "[shape=box]") $ allHeaders h,
-                          showNodes (T.pack "[shape=note]") $ allContents h,
+showHeading h = T.concat [showNodes (T.pack "[shape=ellipse,fontsize=20,fillcolor=]") $ allTags h,
+                          showNodes (T.pack "[shape=box,fontsize=20]") $ allHeaders h,
+                          showNodes (T.pack "[shape=note,fontsize=10]") $ allContents h,
                           T.unlines $ map showDot . convertHeading $ h]
 
 showNodes :: T.Text -> [T.Text] -> T.Text
