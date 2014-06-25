@@ -15,19 +15,29 @@ data Kind = Header2Subheader
           | Header2Content deriving (Show, Eq)
 
 showHeadings :: [Heading] -> T.Text
-showHeadings hs = T.concat $ [T.pack "digraph G {\nlayout=sfdp\n"]
+showHeadings hs = T.concat $ [T.pack "digraph G {\nlayout=dot\nrankdir=LR\n"]
                           ++ map showHeading hs
                           ++ [T.singleton '}']
 
 
 showHeading :: Heading -> T.Text
-showHeading h =  T.unlines $ map showDot . convertHeading $ h
+showHeading h = T.concat [showNodes (T.pack "[shape=ellipse]") $ allTags h,
+                          showNodes (T.pack "[shape=box]") $ allHeaders h,
+                          showNodes (T.pack "[shape=note]") $ allContents h,
+                          T.unlines $ map showDot . convertHeading $ h]
+
+showNodes :: T.Text -> [T.Text] -> T.Text
+showNodes conf =
+    T.unlines . (map (\n -> T.append n conf))
 
 showDot :: Dot -> T.Text
-showDot d | kind d == Header2Subheader  = showDotWith (T.pack "") d
-          | kind d == Tag2Header        = showDotWith (T.pack "") d
-          | kind d == Header2Content    = showDotWith (T.pack "") d
-          | otherwise                   = T.empty
+showDot d | kind d == Header2Subheader =
+                        showDotWith (T.pack "[color=red];") d
+          | kind d == Tag2Header =
+                        showDotWith (T.pack "[color=green];") d
+          | kind d == Header2Content =
+                        showDotWith (T.pack "[color=black];") d
+          | otherwise = T.empty
 
 quote :: T.Text -> T.Text
 quote t = T.concat [T.singleton '"', t, T.singleton '"']
@@ -57,8 +67,22 @@ allTags2headers = concat . collect tags2header
 
 header2content :: Heading -> Dot
 header2content h = Dot (title h)
-                       (content h) Header2Content
+                       (dotcontent h) Header2Content
+
+dotcontent :: Heading -> T.Text
+dotcontent = T.concat
+           . map (\t -> T.append t $ T.pack "\\n")
+           . T.lines . content
 
 allHeaders2contents :: Heading -> [Dot]
 allHeaders2contents h = filter (\hh -> not $ T.null (node2 hh))
                              $ collect header2content h
+
+allContents :: Heading -> [T.Text]
+allContents = map quote . filter (not . T.null) . collect dotcontent
+
+allTags :: Heading -> [T.Text]
+allTags = map quote . S.toList . collectTags
+
+allHeaders :: Heading -> [T.Text]
+allHeaders = map quote . collect title

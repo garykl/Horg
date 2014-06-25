@@ -57,6 +57,13 @@
     nodes, needed for graphviz input.
 **** DONE get all used tags in a heading
      the collect function was used for that purpose.
+**** TODO newline behavior
+     of the dot program
+**** TODO node style
+     different node styles for different kinds of nodes
+     - header: box
+     - tag: ellipse
+     - content: note
 **** TODO sophisticated configuration
      all the configuration can also be done at the level of the headings. 
      Seems to be the superior approach at the moment.
