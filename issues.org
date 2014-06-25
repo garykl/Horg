@@ -66,21 +66,23 @@
      - content: note
 **** TODO sophisticated configuration
      all the configuration can also be done at the level of the headings. 
-     Seems to be the superior approach at the moment.
+     Seems to be the superior approach at the moment. See filtering.
      - shall contents be shown?
        that could be realized as a traverse, removing contents.
+***** DONE visual configuration
+      shapes, arrows and colors. Everythin is packed inside records.
 **** Nodes
-     - header
-     - content
-     - tag
-     - (categories)
-     - (certain properties)
+     - [X] header
+     - [X] content
+     - [X] tag
+     - [ ] (categories)
+     - [ ] (certain properties)
 **** Edges
-     - header to subheader
-     - tag to header
-     - header to content
-     - (category to header)
-     - (header to certain property)
+     - [X] header to subheader
+     - [X] tag to header
+     - [X] header to content
+     - [ ] (category to header)
+     - [ ] (header to certain property)
 *** Org-Mode
     Using the the functionality of =modifying=, custom reports may be created 
     and saved in other org-mode files. For example filtering with respect to 
