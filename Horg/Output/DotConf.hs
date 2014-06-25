@@ -93,4 +93,4 @@ defaultContentConf = nodeConf { shape = Note,
                                 fontsize = 12,
                                 style = Filled,
                                 fillcolor = "#ffffaa",
-                                fontcolor = "#000033" }
+                                fontcolor = "#0000bb" }
