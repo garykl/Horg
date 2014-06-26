@@ -68,7 +68,7 @@ globalConf :: GlobalConf
 globalConf = GlobalConf Dot LR
 
 defaultGlobalConf :: GlobalConf
-defaultGlobalConf = GlobalConf Dot LR
+defaultGlobalConf = GlobalConf Fdp LR
 
 
 nodeConf :: NodeConf

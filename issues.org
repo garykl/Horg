@@ -1,33 +1,14 @@
-* Horg
-  :program:haskell:
+#+FILETAGS: :program:haskell:horg:
+* description
   A haskell program for parsing org-mode files. An org-mode file is read an
   a record is created from it. It contains the title, content, tags, 
   properties and all subheadings.
-** parsing
-   :parsing:
-*** DONE PROPERTY parsing stucks
-*** parse file headers
-**** DONE FILETAGS
-**** TODO category
-*** TODO dates
-    a date time library must be used here!
-**** TODO SCHEDULED
-**** TODO DEADLINE
-**** TODO CLOSED
-**** TODO LOGBOOK
-     very very similar to properties.
-**** TODO timestamps
-*** DONE TODO states
-    implementation: if the first word of the title line is written in capital 
-    letters, it is used as state.
-    problems:
-    - it is not used, if it the title consists of only one word.
-    - unresolved issue: e.g. * JSON output. JSON would be a state in that 
-      case.
 
-** modifying
+* library
+** Heading
 *** purpose
-    functionality of an agenda can be easily provided.
+    provides the data structure, in which the information of a Heading of an 
+    Org-mode file is saved. It is recursive due to subheadings.
 *** DONE a traversal function is needed
     for considering different TODO states, filetags and categories. I'm going 
     to try to make in an instance of the traversable typeclass.
@@ -35,25 +16,22 @@
     I can't make it an instance, because I need parameterized data type!
     Also, for tags, this is not useful, because tags are inherited into the 
     subtrees anyway.
-** filter
+** Filter
 *** TODO title
     search for infixes
 *** TODO content
     search for infixes
-** TODO sorting
-*** TODO certain dates
-*** TODO title?
-*** TODO tags
-*** TODO content length
-*** TODO properties
-*** TODO multi layer sorting
-    sort for tags in first place. There will be many items per tags, which can 
-    be sorted by another criterion.
+*** DONE tags
+    search for exact matches
+*** DONE state
+    search for exact matches
 ** Output
 *** TODO generalize
     try to uniform the output creation mechanism, for plugin writers
 *** JSON
+   :json:
 *** DOT
+   :dot:
     the collect function may also be used for generating all the edges and 
     nodes, needed for graphviz input.
 **** DONE get all used tags in a heading
@@ -98,11 +76,45 @@
       do not makes line breaks, as suggested above! I replaced 
       Data.Text.concat with Data.Text.unlines, so that line break of the 
       original documents are preserved.
-** bugs
-*** DONE often there is a leading empty tag!
+
+* TODO sorting
+** TODO certain dates
+** TODO title?
+** TODO tags
+** TODO content length
+** TODO properties
+** TODO multi layer sorting
+    sort for tags in first place. There will be many items per tags, which can 
+    be sorted by another criterion.
+
+* bugs
+** DONE often there is a leading empty tag!
     problem solved by removing all empty lines.
-*** DONE there are problem with T.head when an empty line follows the title
+** DONE there are problem with T.head when an empty line follows the title
     problem solved by removing all empty lines.
-*** DONE there is also a problem, when there is no line between to headings
+** DONE there is also a problem, when there is no line between to headings
     the Data.List.Split module behaves strange, could break again in future
-*** DONE head error when there is no file meta data
+** DONE head error when there is no file meta data
+
+* parsing
+   :parsing:
+** TODO dates
+    a date time library must be used here!
+*** TODO SCHEDULED
+*** TODO DEADLINE
+*** TODO CLOSED
+*** TODO LOGBOOK
+     very very similar to properties.
+*** TODO timestamps
+** parse file headers
+*** DONE FILETAGS
+*** TODO category
+** DONE PROPERTY parsing stucks
+** DONE TODO states
+    implementation: if the first word of the title line is written in capital 
+    letters, it is used as state.
+    problems:
+    - it is not used, if it the title consists of only one word.
+    - unresolved issue: e.g. * JSON output. JSON would be a state in that 
+      case.
+

@@ -64,7 +64,7 @@ allHeader2subheaders = concat . collect header2subheaders
 tags2header :: Heading -> [Edge]
 tags2header h =
     let ts = S.toList $ tags h
-    in  map (\t -> Edge t (title h) Tag2Header) ts
+    in  map (\t -> Edge (title h) t Tag2Header) ts
 
 allTags2headers :: Heading -> [Edge]
 allTags2headers = concat . collect tags2header
