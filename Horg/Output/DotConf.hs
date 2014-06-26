@@ -1,5 +1,6 @@
 module Horg.Output.DotConf where
 
+
 data Conf = Conf {
         global :: GlobalConf,
         tag :: NodeConf,
@@ -22,6 +23,7 @@ instance Show Layout where
                               Neato -> "neato"
                               Fdp -> "fdp"
                               Circo -> "circo"
+
 data Rankdir = TB | LR
 instance Show Rankdir where
     show r = "rankdir=" ++ case r of
@@ -58,14 +60,17 @@ instance Show Style where
 conf :: Conf
 conf = Conf globalConf nodeConf nodeConf nodeConf
 
+
 defaultConf :: Conf
 defaultConf = conf { global = defaultGlobalConf,
                      tag = defaultTagConf,
                      header = defaultHeaderConf,
                      content = defaultContentConf }
 
+
 globalConf :: GlobalConf
 globalConf = GlobalConf Dot LR
+
 
 defaultGlobalConf :: GlobalConf
 defaultGlobalConf = GlobalConf Fdp LR
@@ -74,6 +79,7 @@ defaultGlobalConf = GlobalConf Fdp LR
 nodeConf :: NodeConf
 nodeConf = NodeConf Box 10 Filled "#000000" "#ffffff"
 
+
 defaultTagConf :: NodeConf
 defaultTagConf = nodeConf { shape = Ellipse,
                             fontsize = 20,
@@ -81,12 +87,14 @@ defaultTagConf = nodeConf { shape = Ellipse,
                             fillcolor = "#333333",
                             fontcolor = "#ccccff" }
 
+
 defaultHeaderConf :: NodeConf
 defaultHeaderConf = nodeConf { shape = Box,
                                fontsize = 17,
                                style = Filled,
                                fillcolor = "#ffffff",
                                fontcolor = "#000000" }
+
 
 defaultContentConf :: NodeConf
 defaultContentConf = nodeConf { shape = Note,

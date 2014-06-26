@@ -17,14 +17,19 @@
     Also, for tags, this is not useful, because tags are inherited into the 
     subtrees anyway.
 ** Filter
-*** TODO title
+*** DONE title
     search for infixes
-*** TODO content
+*** DONE content
     search for infixes
 *** DONE tags
     search for exact matches
 *** DONE state
     search for exact matches
+*** kinds of filters
+    there are three kinds of filters I can think of:
+    - [X] deep (filters out everything, including the subtrees)
+    - [X] surface (keep all subtrees of a non filtered out heading)
+    - [ ] conserve (conserves the tree structure completely)
 ** Output
 *** TODO generalize
     try to uniform the output creation mechanism, for plugin writers

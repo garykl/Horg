@@ -32,7 +32,7 @@ justMain fn = do
     let hs = concat $ map Parse.parseFile cntnt
         filtered =
             concat
-          $ map (Filter.surface (Filter.state $ T.pack "TODO")) hs
+          $ map (Filter.deep (Filter.tag $ T.pack "chlamy")) hs
     putStrLn $ T.unpack $ Dot.showHeadings DotConf.defaultConf filtered
 
 
