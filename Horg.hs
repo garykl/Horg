@@ -5,6 +5,7 @@ import qualified Data.Text as T
 import qualified Data.Set as S
 
 import qualified Horg.Parse as Parse
+import qualified Horg.Filter as Filter
 -- import qualified Horg.Output.Org as Org
 import qualified Horg.Output.Dot as Dot
 import qualified Horg.Output.DotConf as DotConf
@@ -28,8 +29,11 @@ justTags fn = do
 justMain :: [FilePath] -> IO ()
 justMain fn = do
     cntnt <- mapM readFile fn
-    let gg = concat $ map Parse.parseFile cntnt
-    putStrLn $ T.unpack $ Dot.showHeadings DotConf.defaultConf gg
+    let hs = concat $ map Parse.parseFile cntnt
+        filtered =
+            concat
+          $ map (Filter.surface (Filter.state $ T.pack "TODO")) hs
+    putStrLn $ T.unpack $ Dot.showHeadings DotConf.defaultConf filtered
 
 
 banner :: String
