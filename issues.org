@@ -1,9 +1,10 @@
 * Horg
-  :program:
+  :program:haskell:
   A haskell program for parsing org-mode files. An org-mode file is read an
   a record is created from it. It contains the title, content, tags, 
   properties and all subheadings.
 ** parsing
+   :parsing:
 *** DONE PROPERTY parsing stucks
 *** parse file headers
 **** DONE FILETAGS
@@ -57,9 +58,9 @@
     nodes, needed for graphviz input.
 **** DONE get all used tags in a heading
      the collect function was used for that purpose.
-**** TODO newline behavior
+**** DONE newline behavior
      of the dot program
-**** TODO node style
+**** DONE node style
      different node styles for different kinds of nodes
      - header: box
      - tag: ellipse
