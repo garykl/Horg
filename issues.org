@@ -82,6 +82,32 @@
       Data.Text.concat with Data.Text.unlines, so that line break of the 
       original documents are preserved.
 
+** parsing
+   :parsing:
+*** TODO dates
+    a date time library must be used here!
+**** TODO SCHEDULED
+**** TODO DEADLINE
+**** TODO CLOSED
+**** TODO LOGBOOK
+     very very similar to properties.
+**** TODO timestamps
+*** parse file headers
+**** DONE FILETAGS
+**** TODO category
+*** DONE PROPERTY parsing stucks
+*** DONE TODO states
+    implementation: if the first word of the title line is written in capital 
+    letters, it is used as state.
+    problems:
+    - it is not used, if it the title consists of only one word.
+    - unresolved issue: e.g. * JSON output. JSON would be a state in that 
+      case.
+
+*** DONE command line
+    a language for expressing filters. So far, in title and content, no spaces 
+    can be inserted. this can be possible by using single quotes.
+
 * TODO sorting
 ** TODO certain dates
 ** TODO title?
@@ -100,26 +126,4 @@
 ** DONE there is also a problem, when there is no line between to headings
     the Data.List.Split module behaves strange, could break again in future
 ** DONE head error when there is no file meta data
-
-* parsing
-   :parsing:
-** TODO dates
-    a date time library must be used here!
-*** TODO SCHEDULED
-*** TODO DEADLINE
-*** TODO CLOSED
-*** TODO LOGBOOK
-     very very similar to properties.
-*** TODO timestamps
-** parse file headers
-*** DONE FILETAGS
-*** TODO category
-** DONE PROPERTY parsing stucks
-** DONE TODO states
-    implementation: if the first word of the title line is written in capital 
-    letters, it is used as state.
-    problems:
-    - it is not used, if it the title consists of only one word.
-    - unresolved issue: e.g. * JSON output. JSON would be a state in that 
-      case.
 
