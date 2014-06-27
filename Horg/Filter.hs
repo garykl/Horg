@@ -19,8 +19,8 @@ f *& g = Filter $ \h -> checkHeading f h && checkHeading g h
 f *| g = Filter $ \h -> checkHeading f h || checkHeading g h
 
 
--- | apply a filter on a heading. when a heading is not filtered out, the
--- | complete tree and all its subtrees are returned.
+-- | apply a filter on a heading. when a heading or subheading is not filtered
+-- | out, this complete (sub)heading with all its subheadings is returned.
 surface:: Filter -> Heading.Heading -> [Heading.Heading]
 surface f h =
       if checkHeading f h
@@ -38,6 +38,14 @@ deep f h =
             then [h { Heading.subheadings = acc }]
             else acc
 
+
+-- | apply a filter on a heading, when a heading matches in an arbitrary
+-- | subheading, it is returned.
+preserve :: Filter -> Heading.Heading -> [Heading.Heading]
+preserve f h =
+    if not . null $ surface f h
+        then [h]
+        else []
 
 tag :: T.Text -> Filter
 tag = Filter . hasTag
