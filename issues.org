@@ -104,9 +104,10 @@
     - unresolved issue: e.g. * JSON output. JSON would be a state in that 
       case.
 
-*** DONE command line
+*** TODO command line
     a language for expressing filters. So far, in title and content, no spaces 
-    can be inserted. this can be possible by using single quotes.
+    can be inserted. this can be possible by using single quotes. In effect, 
+    only one the function quotedwords must be implemented correctly.
 
 * TODO sorting
 ** TODO certain dates

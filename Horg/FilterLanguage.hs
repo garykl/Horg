@@ -31,11 +31,15 @@ feval (Or e1 e2) = feval e1 F.*| feval e2
 
 parse :: String -> Fexpr F.Filter
 parse t
-  | not (isWithORs t || isWithParens t) = parseItem t
+  | not (isWithORs t || isWithParens t) =
+    foldl (And) (Pack F.idAnd) $ map parseItem (quotedwords t)
   | otherwise =
       let ors = map extractLeftOuterParen $ extractOuterORs t
           ani = map (\(l, c, r) -> And (parse l) (And (parse c) (parse r))) ors
-      in  foldl (Or) (Pack F.id) ani
+      in  foldl (Or) (Pack F.idOr) ani
+  where
+  quotedwords :: String -> [String]
+  quotedwords = words
 
 
 parseItem :: String -> Fexpr F.Filter
@@ -45,7 +49,7 @@ parseItem s
   | "state=" `isPrefixOf` s     = State . getValue $ s
   | head s == '+'               = Tag . tail $ s
   | head s == '-'               = Notag . tail $ s
-  | otherwise                   = Pack F.id
+  | otherwise                   = Pack F.idAnd
   where getValue :: String -> String
         getValue = mayStripSingleQuote . tail . dropWhile (/= '=')
 

@@ -47,8 +47,11 @@ preserve f h =
         then [h]
         else []
 
-id :: Filter
-id = Filter . const $ True
+idAnd :: Filter
+idAnd = Filter . const $ True
+
+idOr :: Filter
+idOr = Filter . const $ False
 
 tag :: T.Text -> Filter
 tag = Filter . hasTag

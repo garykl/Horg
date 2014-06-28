@@ -6,6 +6,7 @@ import qualified Data.Set as S
 
 import qualified Horg.Parse as Parse
 import qualified Horg.Filter as Filter
+import qualified Horg.FilterLanguage as FilterLanguage
 -- import qualified Horg.Output.Org as Org
 import qualified Horg.Output.Dot as Dot
 import qualified Horg.Output.DotConf as DotConf
@@ -18,7 +19,10 @@ main = do
     --putStrLn banner
 
     args <- getArgs
-    justMain args
+    let filterexpression = concat . takeWhile (/= "--") $ args
+    let filenames = tail . dropWhile (/= "--") $ args
+    let filt = FilterLanguage.feval . FilterLanguage.parse $ filterexpression
+    justMain filenames filt
 
 justTags :: FilePath -> IO ()
 justTags fn = do
@@ -26,13 +30,11 @@ justTags fn = do
     let gg = Parse.parseFile cntnt
     print $ S.toList . S.unions . (map Heading.collectTags) $ gg
 
-justMain :: [FilePath] -> IO ()
-justMain fn = do
+justMain :: [FilePath] -> Filter.Filter -> IO ()
+justMain fn filt = do
     cntnt <- mapM readFile fn
     let hs = concat $ map Parse.parseFile cntnt
-        filtered =
-            concat
-          $ map (Filter.deep (Filter.tag $ T.pack "chlamy")) hs
+        filtered = concat . map (Filter.deep filt) $ hs
     putStrLn $ T.unpack $ Dot.showHeadings DotConf.defaultConf filtered
 
 
