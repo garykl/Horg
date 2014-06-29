@@ -4,13 +4,15 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified Data.Text as T
 import Data.List.Split (split, dropBlanks, dropDelims, whenElt)
+import Data.Time.LocalTime (LocalTime)
 
 import Helpers (concatPairs, splitWhile, stripColons)
+import Horg.Datetime (parseDateRange)
 import Horg.Heading
 
 
 parseFile :: String -> [Heading]
-parseFile cntnt = 
+parseFile cntnt =
 
     let finecontent = prepareFile cntnt
         headings = map (flip parseHeading $ 1)
@@ -57,7 +59,7 @@ parseHeading cntnt n =
 
         thisContent     = getNonMeta withoutTitle
         -- thisDates       = getDates withoutTitle
-        -- thisLogbook     = getLogbook withoutTitle
+        thisLogbook     = getLogbook withoutTitle
         thisProperties  = getProperties withoutTitle
         thisSubheadings = map (flip parseHeading $ n + 1)
                               (allHeaders otherCntnt (n + 1))
@@ -67,6 +69,7 @@ parseHeading cntnt n =
                       content     = thisContent,
                       state       = thisState,
                       properties  = thisProperties,
+                      logbook     = thisLogbook,
                       subheadings = thisSubheadings }
 
 getStateTitleTags :: [T.Text] -> (Maybe T.Text, T.Text, S.Set T.Text)
@@ -103,6 +106,29 @@ getStateTitleTags ts =
                     then (T.strip potentialTitl, getTags [potentialTags])
                     else (titl, S.empty)
 
+
+getLogbook :: [T.Text] -> [(LocalTime, LocalTime)]
+getLogbook = logbookText2Logbook . getLogbookText
+    where
+
+    logbookText2Logbook :: [T.Text] -> [(LocalTime, LocalTime)]
+    logbookText2Logbook [] = []
+    logbookText2Logbook ts =
+
+        let relevant = tail ts
+        in  map parseLogbook relevant
+
+        where parseLogbook :: T.Text -> (LocalTime, LocalTime)
+              parseLogbook t =
+                  let relevantH = tail . T.words $ t
+                      relevant = take ((length relevantH) - 2) relevantH
+                      Just dtr = parseDateRange . T.unpack . T.unwords $ relevant
+                  in  dtr
+
+    getLogbookText :: [T.Text] -> [T.Text]
+    getLogbookText ts = takeWhile (/= T.pack ":END:")
+                  $ dropWhile (/= T.pack ":LOGBOOK:")
+                  $ ts
 
 getProperties :: [T.Text] -> M.Map T.Text T.Text
 getProperties = propertyText2Property . getPropertyText

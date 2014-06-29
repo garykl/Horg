@@ -3,6 +3,8 @@ module Horg.Heading where
 import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified Data.Text as T
+import Data.Time.LocalTime (LocalTime)
+
 
 -- | an Ord-mode file is a tree of heading with some content
 data Heading = Heading {
@@ -11,11 +13,12 @@ data Heading = Heading {
     state :: Maybe T.Text,
     content :: T.Text,
     properties :: M.Map T.Text T.Text,
+    logbook :: [(LocalTime, LocalTime)],
     subheadings :: [Heading] }
 
 
 emptyHeading :: Heading
-emptyHeading = Heading T.empty S.empty Nothing T.empty M.empty []
+emptyHeading = Heading T.empty S.empty Nothing T.empty M.empty [] []
 
 addTag :: T.Text -> Heading -> Heading
 addTag t h = h { tags = S.insert t $ tags h }

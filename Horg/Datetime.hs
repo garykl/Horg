@@ -23,12 +23,29 @@ shortDateTimeFormat = "<%Y-%m-%d %H:%M>"
 longDateTimeFormat :: String
 longDateTimeFormat = "<%Y-%m-%d %a %H:%M>"
 
+iShortDateFormat :: String
+iShortDateFormat = "[%Y-%m-%d]"
+
+iLongDateFormat :: String
+iLongDateFormat = "[%Y-%m-%d %a]"
+
+iShortDateTimeFormat :: String
+iShortDateTimeFormat = "[%Y-%m-%d %H:%M]"
+
+iLongDateTimeFormat :: String
+iLongDateTimeFormat = "[%Y-%m-%d %a %H:%M]"
+
 parseDate :: String -> Maybe LocalTime
 parseDate = foldl1 (|>>) $
                 map parse [longDateTimeFormat,
                            shortDateTimeFormat,
                            longDateFormat,
-                           shortDateFormat]
+                           shortDateFormat,
+                           iLongDateTimeFormat,
+                           iShortDateTimeFormat,
+                           iLongDateFormat,
+                           iShortDateFormat]
+
 
 parseDateTimeRange :: String -> Maybe (LocalTime, LocalTime)
 parseDateTimeRange s =

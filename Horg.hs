@@ -20,16 +20,17 @@ main = do
 
     args <- getArgs
     let filterexpression = unwords . takeWhile (/= "--") $ args
-    print filterexpression
     let filenames = tail . dropWhile (/= "--") $ args
     let filt = FilterLanguage.feval . FilterLanguage.parse $ filterexpression
     justMain filenames filt
+
 
 justTags :: FilePath -> IO ()
 justTags fn = do
     cntnt <- readFile fn
     let gg = Parse.parseFile cntnt
     print $ S.toList . S.unions . (map Heading.collectTags) $ gg
+
 
 justMain :: [FilePath] -> Filter.Filter -> IO ()
 justMain fn filt = do
