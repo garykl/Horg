@@ -29,7 +29,9 @@
     there are three kinds of filters I can think of:
     - [X] deep (filters out everything, including the subtrees)
     - [X] surface (keep all subtrees of a non filtered out heading)
-    - [ ] conserve (conserves the tree structure completely)
+    - [X] conserve (conserves the tree structure completely)
+    the deep and surface filters should propagate their tags to its children 
+    being filtered out.
 ** Output
 *** TODO generalize
     try to uniform the output creation mechanism, for plugin writers
