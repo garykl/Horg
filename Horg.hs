@@ -19,7 +19,8 @@ main = do
     --putStrLn banner
 
     args <- getArgs
-    let filterexpression = concat . takeWhile (/= "--") $ args
+    let filterexpression = unwords . takeWhile (/= "--") $ args
+    print filterexpression
     let filenames = tail . dropWhile (/= "--") $ args
     let filt = FilterLanguage.feval . FilterLanguage.parse $ filterexpression
     justMain filenames filt
