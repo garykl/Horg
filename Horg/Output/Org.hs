@@ -3,8 +3,10 @@ module Horg.Output.Org (showHeading) where
 import qualified Data.Text as T
 import qualified Data.Set as S
 import qualified Data.Map as M
+import Data.Time.LocalTime (LocalTime)
 
 import Horg.Heading
+import qualified Horg.Datetime as DT
 import Helpers (spacing)
 
 
@@ -13,24 +15,35 @@ showHeading = T.unlines . (showHeadingH 1)
 
 
 showHeadingH :: Int -> Heading -> [T.Text]
-showHeadingH n h = showTitle n (state h) (title h)
-                ++ showTags n (tags h)
+showHeadingH n h = [T.concat [showTitleAndState n (state h) (title h),
+                              T.singleton ' ',
+                              showTags n (tags h)]]
+                ++ showDates n (dates h)
+                ++ showLogbook n (logbook h)
                 ++ showProperties n (properties h)
                 ++ showContent n (content h)
                 ++ showSubheadings n (subheadings h)
 
 
-showTitle :: Int -> Maybe T.Text -> T.Text -> [T.Text]
-showTitle n s t =
+showTitleAndState :: Int -> Maybe T.Text -> T.Text -> T.Text
+showTitleAndState n s t =
     let tit = case s of
                 Nothing -> T.singleton ' '
                 Just h -> T.concat [T.singleton ' ', h, T.singleton ' ']
-    in  [T.concat [T.replicate n (T.singleton '*'), tit, t]]
+    in  T.concat [T.replicate n (T.singleton '*'), tit, t]
 
 
-showTags :: Int -> S.Set T.Text -> [T.Text]
-showTags n ts | S.null ts   = []
-              | otherwise   = [T.append (spacing (n + 1)) (showTagsH ts)]
+showDates :: Int -> [Datetype LocalTime] -> [T.Text]
+showDates n = map (T.append (spacing (n + 1)) . T.pack . show)
+
+
+showLogbook :: Int -> [(LocalTime, LocalTime)] -> [T.Text]
+showLogbook n = map (T.append (spacing (n + 1)) . T.pack . DT.showRange)
+
+
+showTags :: Int -> S.Set T.Text -> T.Text
+showTags n ts | S.null ts   = T.empty
+              | otherwise   = T.append (spacing (n + 1)) (showTagsH ts)
     where
     showTagsH t | S.null t    = T.singleton ':'
                 | otherwise   = T.concat [T.singleton ':',

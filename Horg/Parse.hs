@@ -7,7 +7,7 @@ import Data.List.Split (split, dropBlanks, dropDelims, whenElt)
 import Data.Time.LocalTime (LocalTime)
 
 import Helpers (concatPairs, splitWhile, stripColons)
-import Horg.Datetime (parseDateRange)
+import Horg.Datetime (parseDateRange, parseDate)
 import Horg.Heading
 
 
@@ -52,13 +52,13 @@ parseHeading cntnt n =
             splitWhile
             (\h -> (not (checkIfHeading h (n + 1))))
                 cntnt
-        withoutTitle = if length thisCntnt == 1 then [] else tail thisCntnt
+        withoutTitle = if length thisCntnt <= 1 then [] else tail thisCntnt
 
         (thisState, thisTitle, thisTagsHeader) = getStateTitleTags thisCntnt
         thisTagsRest    = getTags withoutTitle
 
         thisContent     = getNonMeta withoutTitle
-        -- thisDates       = getDates withoutTitle
+        thisDates       = getDates withoutTitle
         thisLogbook     = getLogbook withoutTitle
         thisProperties  = getProperties withoutTitle
         thisSubheadings = map (flip parseHeading $ n + 1)
@@ -70,7 +70,30 @@ parseHeading cntnt n =
                       state       = thisState,
                       properties  = thisProperties,
                       logbook     = thisLogbook,
+                      dates       = thisDates,
                       subheadings = thisSubheadings }
+
+
+justFilter :: Eq a => [Maybe a] -> [a]
+justFilter = map (\(Just h) -> h) . filter (not . (== Nothing))
+
+getDates :: [T.Text] -> [Datetype LocalTime]
+getDates [] = []
+getDates s =
+    let closed = filter (T.isPrefixOf $ T.pack "CLOSED:") s
+        scheduled = filter (T.isPrefixOf $ T.pack "SCHEDULED:") s
+        deadline = filter (T.isPrefixOf $ T.pack "DEADLINE:") s
+    in  filtern Closed (map extractDate closed)
+     ++ filtern Scheduled (map extractDate scheduled)
+     ++ filtern Deadline (map extractDate deadline)
+    where
+    extractDate :: T.Text -> Maybe LocalTime
+    extractDate = parseDate . unwords . map T.unpack . tail . T.words
+    filtern :: (LocalTime -> Datetype LocalTime)
+            -> [Maybe LocalTime]
+            -> [Datetype LocalTime]
+    filtern f ll = map f $ justFilter ll
+
 
 getStateTitleTags :: [T.Text] -> (Maybe T.Text, T.Text, S.Set T.Text)
 getStateTitleTags ts =
@@ -154,7 +177,11 @@ getProperties = propertyText2Property . getPropertyText
 
 
 getNonMeta :: [T.Text] -> T.Text
-getNonMeta = T.unlines . (dropWhile (\c -> ':' == (T.head . T.strip) c))
+getNonMeta = T.unlines
+           . dropWhile (T.isPrefixOf (T.pack "CLOSED"))
+           . dropWhile (T.isPrefixOf (T.pack "DEADLINE"))
+           . dropWhile (T.isPrefixOf (T.pack "SCHEDULED"))
+           . dropWhile (\c -> ':' == (T.head . T.strip) c)
 
 
 getTags :: [T.Text] -> S.Set T.Text
