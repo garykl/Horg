@@ -35,6 +35,15 @@ feval (LaterScheduled d) = F.laterscheduled d
 feval (EarlierScheduled d) = F.earlierscheduled d
 
 
+-- preparse :: String -> [P.Parsed T.Text]
+-- preparse = Parse.parse . T.pack
+
+-- parsepreparsed :: [P.Parsed T.Text] -> Fexpr F.Filter
+-- parsepreparsed = foldl (And) (Pack F.idAnd) . map parsepreparsed'
+--   where
+--   parsepreparsed' :: P.Parsed T.Text -> Fexpr F.Filter
+--   parsepreparsed' (SQuote t) = undefined
+
 parse :: String -> Fexpr F.Filter
 parse t
   | not (isWithORs t || isWithParens t) =
