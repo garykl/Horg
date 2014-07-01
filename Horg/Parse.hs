@@ -6,7 +6,7 @@ import qualified Data.Text as T
 import Data.List.Split (split, dropBlanks, dropDelims, whenElt)
 import Data.Time.LocalTime (LocalTime)
 
-import Helpers (concatPairs, splitWhile, stripColons)
+import Helpers (concatPairs, splitWhile, stripColons, justFilter)
 import Horg.Datetime (parseDateRange, parseDate)
 import Horg.Heading
 
@@ -73,9 +73,6 @@ parseHeading cntnt n =
                       dates       = thisDates,
                       subheadings = thisSubheadings }
 
-
-justFilter :: Eq a => [Maybe a] -> [a]
-justFilter = map (\(Just h) -> h) . filter (not . (== Nothing))
 
 getDates :: [T.Text] -> [Datetype LocalTime]
 getDates [] = []

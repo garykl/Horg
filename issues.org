@@ -1,21 +1,15 @@
 #+FILETAGS: :program:haskell:horg:
 * description
-  A haskell program for parsing org-mode files. An org-mode file is read an
+  A haskell program for parsing org-mode files. An org-mode file is read and
   a record is created from it. It contains the title, content, tags, 
-  properties and all subheadings.
+  properties and all subheadings. Also dates are read.
 
 * library
 ** Heading
 *** purpose
     provides the data structure, in which the information of a Heading of an 
     Org-mode file is saved. It is recursive due to subheadings.
-*** DONE a traversal function is needed
-    for considering different TODO states, filetags and categories. I'm going 
-    to try to make in an instance of the traversable typeclass.
-    Update:
-    I can't make it an instance, because I need parameterized data type!
-    Also, for tags, this is not useful, because tags are inherited into the 
-    subtrees anyway.
+*** traversal function
 ** Filter
 *** DONE title
     search for infixes
@@ -30,15 +24,17 @@
     - [X] deep (filters out everything, including the subtrees)
     - [X] surface (keep all subtrees of a non filtered out heading)
     - [X] conserve (conserves the tree structure completely)
-    the deep and surface filters should propagate their tags to its children 
-    being filtered out.
+**** propagate tags
+     the deep and surface filters should propagate their tags to its children 
+     being filtered out.
+*** range or half range of dates
+    - [ ] all dates
+    - [ ] deadlines
+    - [ ] scheduled
+    - [ ] timestamps
 ** Output
-*** TODO generalize
-    try to uniform the output creation mechanism, for plugin writers
-*** JSON
-   :json:
-*** DOT
-   :dot:
+*** JSON										     :json:
+*** DOT										 :graphviz:
     the collect function may also be used for generating all the edges and 
     nodes, needed for graphviz input.
 **** DONE get all used tags in a heading
@@ -50,13 +46,9 @@
      - header: box
      - tag: ellipse
      - content: note
-**** TODO sophisticated configuration
-     all the configuration can also be done at the level of the headings. 
-     Seems to be the superior approach at the moment. See filtering.
-     - shall contents be shown?
-       that could be realized as a traverse, removing contents.
+**** DONE sophisticated configuration
 ***** DONE visual configuration
-      shapes, arrows and colors. Everythin is packed inside records.
+      shapes, arrows and colors. Everything is packed inside records.
 **** Nodes
      - [X] header
      - [X] content
@@ -76,9 +68,11 @@
     containing the logging of a program creation, with feature descriptions, 
     issue tracking, also finished issues. A README file or an TODO file can 
     then be provided.
-**** DONE showContent
+**** TODO showContent
      must be modified in a way, such that line break occur only at spaces and 
      line length does not exceed 80 chars.
+     The following solution is a nice workaround, but for sophisticated 
+     filtering, a proper way of line breaks is needed.
 ***** solution
       do not makes line breaks, as suggested above! I replaced 
       Data.Text.concat with Data.Text.unlines, so that line break of the 
@@ -86,14 +80,14 @@
 
 ** parsing
    :parsing:
-*** TODO dates
+*** dates
     a date time library must be used here!
-**** TODO SCHEDULED
-**** TODO DEADLINE
-**** TODO CLOSED
-**** TODO LOGBOOK
+**** DONE SCHEDULED
+**** DONE DEADLINE
+**** DONE CLOSED
+**** DONE LOGBOOK
      very very similar to properties.
-**** TODO timestamps
+**** DONE timestamps
 *** parse file headers
 **** DONE FILETAGS
 **** TODO category
@@ -109,24 +103,19 @@
 *** TODO command line
     a language for expressing filters. So far, in title and content, no spaces 
     can be inserted. this can be possible by using single quotes. In effect, 
-    only one the function quotedwords must be implemented correctly.
+    the function quotedwords must be implemented correctly. Another problem is 
+    the interpretation of parens inside quotes. A whole new parsing mechanism 
+    would be necessary.
 
-* TODO sorting
-** TODO certain dates
-** TODO title?
-** TODO tags
-** TODO content length
-** TODO properties
-** TODO multi layer sorting
+** TODO sorting
+*** TODO certain dates
+*** TODO title?
+*** TODO tags
+*** TODO content length
+*** TODO properties
+*** TODO multi layer sorting
     sort for tags in first place. There will be many items per tags, which can 
     be sorted by another criterion.
 
-* bugs
-** DONE often there is a leading empty tag!
-    problem solved by removing all empty lines.
-** DONE there are problem with T.head when an empty line follows the title
-    problem solved by removing all empty lines.
-** DONE there is also a problem, when there is no line between to headings
-    the Data.List.Split module behaves strange, could break again in future
-** DONE head error when there is no file meta data
-
+**** same criteria for all layers.
+**** different criteria for different layers.

@@ -5,11 +5,7 @@ import Data.Time.Format (parseTime, formatTime)
 import Data.Time.LocalTime (LocalTime)
 import System.Locale (defaultTimeLocale)
 
-(|>>) :: (a -> Maybe b) -> (a -> Maybe b) -> (a -> Maybe b)
-f |>> g =
-    \a -> case f a of
-              Nothing -> g a
-              Just r -> Just r
+import Helpers ((|>>))
 
 shortDateFormat :: String
 shortDateFormat = "<%Y-%m-%d>"
