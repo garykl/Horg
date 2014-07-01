@@ -3,8 +3,10 @@ module Horg.FilterLanguage where
 
 import qualified Data.Text as T
 import Data.List
+import Data.Time.LocalTime (LocalTime)
 
 import qualified Horg.Filter as F
+import qualified Horg.Datetime as DT
 
 
 data Fexpr a where
@@ -16,6 +18,8 @@ data Fexpr a where
     State :: String -> Fexpr F.Filter
     And :: Fexpr a -> Fexpr a -> Fexpr a
     Or :: Fexpr a -> Fexpr a -> Fexpr a
+    LaterScheduled :: LocalTime -> Fexpr F.Filter
+    EarlierScheduled :: LocalTime -> Fexpr F.Filter
 
 
 feval :: Fexpr F.Filter -> F.Filter
@@ -27,6 +31,8 @@ feval (Title t) = F.title $ T.pack t
 feval (State s) = F.state $ T.pack s
 feval (And e1 e2) = feval e1 F.*& feval e2
 feval (Or e1 e2) = feval e1 F.*| feval e2
+feval (LaterScheduled d) = F.laterscheduled d
+feval (EarlierScheduled d) = F.earlierscheduled d
 
 
 parse :: String -> Fexpr F.Filter
@@ -49,6 +55,14 @@ parseItem s
   | "state=" `isPrefixOf` s     = State . getValue $ s
   | head s == '+'               = Tag . tail $ s
   | head s == '-'               = Notag . tail $ s
+  | head s == '<'               = let d = DT.parseDate . tail $ s
+                                  in  case d of
+                                          Nothing -> Pack F.idOr
+                                          Just dd -> LaterScheduled dd
+  | head s == '>'               = let d = DT.parseDate . tail $ s
+                                  in  case d of
+                                          Nothing -> Pack F.idOr
+                                          Just dd -> LaterScheduled dd
   | otherwise                   = Pack F.idAnd
   where getValue :: String -> String
         getValue = mayStripSingleQuote . tail . dropWhile (/= '=')

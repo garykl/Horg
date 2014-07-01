@@ -23,12 +23,27 @@ data Datetype a = Closed a
                 | Scheduled a
                 | Deadline a
                 | Timestamp a
+
 instance Show (Datetype LocalTime) where
     show (Closed d) = "CLOSED: " ++ DT.showLocalTime d
     show (Scheduled d) = "SCHEDULED: " ++ DT.showLocalTime d
     show (Deadline d) = "DEADLINE: " ++ DT.showLocalTime d
     show (Timestamp d) = DT.showLocalTime d
 
+closed :: [Datetype LocalTime] -> Maybe LocalTime
+closed [] = Nothing
+closed ((Closed d):_) = Just d
+closed dd = scheduled $ tail dd
+
+deadline :: [Datetype LocalTime] -> Maybe LocalTime
+deadline [] = Nothing
+deadline ((Deadline d):_) = Just d
+deadline dd = scheduled $ tail dd
+
+scheduled :: [Datetype LocalTime] -> Maybe LocalTime
+scheduled [] = Nothing
+scheduled ((Scheduled d):_) = Just d
+scheduled dd = scheduled $ tail dd
 
 emptyHeading :: Heading
 emptyHeading = Heading T.empty S.empty Nothing T.empty M.empty [] [] []

@@ -3,6 +3,7 @@ module Horg.Filter where
 import qualified Data.Text as T
 import qualified Data.Set as S
 import qualified Data.Map as M
+import Data.Time.LocalTime (LocalTime)
 
 import qualified Horg.Heading as Heading
 
@@ -89,3 +90,15 @@ content = isInfix Heading.content
 
 title :: T.Text -> Filter
 title = isInfix Heading.title
+
+earlierscheduled :: LocalTime -> Filter
+earlierscheduled d = Filter (\h -> let hh = Heading.scheduled (Heading.dates h)
+                            in  case hh of
+                                    Nothing -> False
+                                    Just hhh -> d < hhh)
+
+laterscheduled :: LocalTime -> Filter
+laterscheduled d = Filter (\h -> let hh = Heading.scheduled (Heading.dates h)
+                            in  case hh of
+                                    Nothing -> False
+                                    Just hhh -> d < hhh)

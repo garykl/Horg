@@ -175,10 +175,10 @@ getProperties = propertyText2Property . getPropertyText
 
 getNonMeta :: [T.Text] -> T.Text
 getNonMeta = T.unlines
-           . dropWhile (T.isPrefixOf (T.pack "CLOSED"))
-           . dropWhile (T.isPrefixOf (T.pack "DEADLINE"))
-           . dropWhile (T.isPrefixOf (T.pack "SCHEDULED"))
-           . dropWhile (\c -> ':' == (T.head . T.strip) c)
+           . filter (not . T.isPrefixOf (T.pack "CLOSED"))
+           . filter (not . T.isPrefixOf (T.pack "DEADLINE"))
+           . filter (not . T.isPrefixOf (T.pack "SCHEDULED"))
+           . filter (not . \c -> ':' == (T.head . T.strip) c)
 
 
 getTags :: [T.Text] -> S.Set T.Text
