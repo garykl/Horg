@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs #-}
 module Horg.Heading where
 
 import qualified Data.Map as M
@@ -19,10 +20,11 @@ data Heading = Heading {
     dates :: [Datetype LocalTime],
     subheadings :: [Heading] }
 
-data Datetype a = Closed a
-                | Scheduled a
-                | Deadline a
-                | Timestamp a
+data Datetype a where
+    Closed :: a -> Datetype a
+    Scheduled :: a -> Datetype a
+    Deadline :: a -> Datetype a
+    Timestamp :: a -> Datetype a
 
 instance Show (Datetype LocalTime) where
     show (Closed d) = "CLOSED: " ++ DT.showLocalTime d
@@ -30,20 +32,35 @@ instance Show (Datetype LocalTime) where
     show (Deadline d) = "DEADLINE: " ++ DT.showLocalTime d
     show (Timestamp d) = DT.showLocalTime d
 
-closed :: [Datetype LocalTime] -> Maybe LocalTime
-closed [] = Nothing
-closed ((Closed d):_) = Just d
-closed dd = scheduled $ tail dd
+freedate :: Datetype LocalTime -> LocalTime
+freedate (Closed d) = d
+freedate (Scheduled d) = d
+freedate (Deadline d) = d
+freedate (Timestamp d) = d
 
-deadline :: [Datetype LocalTime] -> Maybe LocalTime
-deadline [] = Nothing
-deadline ((Deadline d):_) = Just d
-deadline dd = scheduled $ tail dd
+filterclosed :: [Datetype LocalTime] -> Maybe LocalTime
+filterclosed [] = Nothing
+filterclosed (Closed d:_) = Just d
+filterclosed dd = filterscheduled $ tail dd
 
-scheduled :: [Datetype LocalTime] -> Maybe LocalTime
-scheduled [] = Nothing
-scheduled ((Scheduled d):_) = Just d
-scheduled dd = scheduled $ tail dd
+closed :: Heading -> Maybe LocalTime
+closed = filterclosed . dates
+
+filterdeadline :: [Datetype LocalTime] -> Maybe LocalTime
+filterdeadline [] = Nothing
+filterdeadline (Deadline d:_) = Just d
+filterdeadline dd = filterscheduled $ tail dd
+
+deadline :: Heading -> Maybe LocalTime
+deadline = filterclosed . dates
+
+filterscheduled :: [Datetype LocalTime] -> Maybe LocalTime
+filterscheduled [] = Nothing
+filterscheduled (Scheduled d:_) = Just d
+filterscheduled dd = filterscheduled $ tail dd
+
+scheduled :: Heading -> Maybe LocalTime
+scheduled = filterclosed . dates
 
 emptyHeading :: Heading
 emptyHeading = Heading T.empty S.empty Nothing T.empty M.empty [] [] []
@@ -57,7 +74,7 @@ addTags ts h | S.null ts   = h
 
 
 collect :: (Heading -> a) -> Heading -> [a]
-collect c h = c h : foldl (++) [] (map (collect c) (subheadings h))
+collect c h = c h : concatMap (collect c) (subheadings h)
 
 collectTags :: Heading -> S.Set T.Text
 collectTags h = S.unions $ collect tags h

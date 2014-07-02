@@ -6,6 +6,7 @@ import qualified Data.Map as M
 import Data.Time.LocalTime (LocalTime)
 
 import qualified Horg.Heading as Heading
+-- import qualified Horg.Datetime as DT
 
 
 data Filter = Filter (Heading.Heading -> Bool)
@@ -26,7 +27,7 @@ surface:: Filter -> Heading.Heading -> [Heading.Heading]
 surface f h =
       if checkHeading f h
           then [h]
-          else foldr (++) [] $ map (surface f) (Heading.subheadings h)
+          else concatMap (surface f) (Heading.subheadings h)
 
 
 -- | apply a filter on a heading, when a heading is not filtered out, only its
@@ -34,7 +35,7 @@ surface f h =
 -- | as well.
 deep :: Filter -> Heading.Heading -> [Heading.Heading]
 deep f h =
-      let acc = foldr (++) [] $ map (deep f) (Heading.subheadings h)
+      let acc = concatMap (deep f) (Heading.subheadings h)
       in if checkHeading f h
             then [h { Heading.subheadings = acc }]
             else acc
@@ -43,10 +44,7 @@ deep f h =
 -- | apply a filter on a heading, when a heading matches in an arbitrary
 -- | subheading, it is returned.
 preserve :: Filter -> Heading.Heading -> [Heading.Heading]
-preserve f h =
-    if not . null $ surface f h
-        then [h]
-        else []
+preserve f h = [h | not . null $ surface f h]
 
 idAnd :: Filter
 idAnd = Filter . const $ True
@@ -62,13 +60,11 @@ tag = Filter . hasTag
 
 
 property :: T.Text -> T.Text -> Filter
-property a = Filter . (hasProperty a)
+property a = Filter . hasProperty a
 
     where hasProperty :: T.Text -> T.Text -> Heading.Heading -> Bool
-          hasProperty k v h =
-              if k `M.member` Heading.properties h
-                   then Heading.properties h M.! k == v
-                   else False
+          hasProperty k v h = k `M.member` Heading.properties h
+                           && Heading.properties h M.! k == v
 
 
 state :: T.Text -> Filter
@@ -91,14 +87,24 @@ content = isInfix Heading.content
 title :: T.Text -> Filter
 title = isInfix Heading.title
 
-earlierscheduled :: LocalTime -> Filter
-earlierscheduled d = Filter (\h -> let hh = Heading.scheduled (Heading.dates h)
-                            in  case hh of
-                                    Nothing -> False
-                                    Just hhh -> d < hhh)
 
-laterscheduled :: LocalTime -> Filter
-laterscheduled d = Filter (\h -> let hh = Heading.scheduled (Heading.dates h)
-                            in  case hh of
-                                    Nothing -> False
-                                    Just hhh -> d < hhh)
+timed :: (LocalTime -> LocalTime -> Bool)
+      -> Heading.Datetype LocalTime
+      -> Filter
+timed op dt =
+    let kindfunc = case dt of
+            Heading.Scheduled _ -> Heading.scheduled
+            Heading.Closed _ -> Heading.closed
+            Heading.Deadline _ -> Heading.deadline
+            _ -> undefined
+    in  Filter $ maybe False (flip op $ Heading.freedate dt) . kindfunc
+
+
+latertimed :: Heading.Datetype LocalTime -> Filter
+latertimed = timed (>)
+
+earliertimed :: Heading.Datetype LocalTime -> Filter
+earliertimed = timed (<)
+
+equaltimed :: Heading.Datetype LocalTime -> Filter
+equaltimed = timed (==)

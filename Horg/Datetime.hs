@@ -31,9 +31,13 @@ iShortDateTimeFormat = "[%Y-%m-%d %H:%M]"
 iLongDateTimeFormat :: String
 iLongDateTimeFormat = "[%Y-%m-%d %a %H:%M]"
 
+rawDateFormat :: String
+rawDateFormat = "%Y-%m-%d"
+
 parseDate :: String -> Maybe LocalTime
 parseDate = foldl1 (|>>) $
-                map parse [longDateTimeFormat,
+                map parse [rawDateFormat,
+                           longDateTimeFormat,
                            shortDateTimeFormat,
                            longDateFormat,
                            shortDateFormat,
@@ -48,8 +52,8 @@ parseDateTimeRange s =
     let w = words s
         timerange = takeWhile (/= '>') $ last w
         restdate = unwords $ init w
-        dateS1 = restdate ++ " " ++ (take 5 timerange) ++ ">"
-        dateS2 = restdate ++ " " ++ (take 5 $ drop 6 timerange) ++ ">"
+        dateS1 = restdate ++ " " ++ take 5 timerange ++ ">"
+        dateS2 = restdate ++ " " ++ take 5 (drop 6 timerange) ++ ">"
         date1 = parseDate dateS1
         date2 = parseDate dateS2
     in  case date1 of
