@@ -90,9 +90,9 @@ parseItem s
   where getValue :: String -> String
         getValue = mayStripSingleQuote . tail . dropWhile (/= '=')
 
-grabDate :: (LocalTime -> H.Datetype LocalTime)
-         -> String -> Maybe (H.Datetype LocalTime)
-grabDate f ss = f <$> (DT.parseDate . tail . tail $ ss)
+        grabDate :: (LocalTime -> H.Datetype LocalTime)
+                 -> String -> Maybe (H.Datetype LocalTime)
+        grabDate f ss = f <$> (DT.parseDate . tail . tail $ ss)
 
 mayStripSingleQuote :: String -> String
 mayStripSingleQuote s =

@@ -41,7 +41,7 @@ freedate (Timestamp d) = d
 filterclosed :: [Datetype LocalTime] -> Maybe LocalTime
 filterclosed [] = Nothing
 filterclosed (Closed d:_) = Just d
-filterclosed dd = filterscheduled $ tail dd
+filterclosed dd = filterclosed $ tail dd
 
 closed :: Heading -> Maybe LocalTime
 closed = filterclosed . dates
@@ -49,10 +49,10 @@ closed = filterclosed . dates
 filterdeadline :: [Datetype LocalTime] -> Maybe LocalTime
 filterdeadline [] = Nothing
 filterdeadline (Deadline d:_) = Just d
-filterdeadline dd = filterscheduled $ tail dd
+filterdeadline dd = filterdeadline $ tail dd
 
 deadline :: Heading -> Maybe LocalTime
-deadline = filterclosed . dates
+deadline = filterdeadline . dates
 
 filterscheduled :: [Datetype LocalTime] -> Maybe LocalTime
 filterscheduled [] = Nothing
@@ -60,7 +60,7 @@ filterscheduled (Scheduled d:_) = Just d
 filterscheduled dd = filterscheduled $ tail dd
 
 scheduled :: Heading -> Maybe LocalTime
-scheduled = filterclosed . dates
+scheduled = filterscheduled . dates
 
 emptyHeading :: Heading
 emptyHeading = Heading T.empty S.empty Nothing T.empty M.empty [] [] []
