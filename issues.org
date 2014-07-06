@@ -24,7 +24,7 @@
     - [X] deep (filters out everything, including the subtrees)
     - [X] surface (keep all subtrees of a non filtered out heading)
     - [X] conserve (conserves the tree structure completely)
-**** propagate tags
+**** TODO propagate tags
      the deep and surface filters should propagate their tags to its children 
      being filtered out.
 *** range or half range of dates
@@ -72,40 +72,8 @@
      must be modified in a way, such that line break occur only at spaces and 
      line length does not exceed 80 chars.
      The following solution is a nice workaround, but for sophisticated 
-     filtering, a proper way of line breaks is needed.
-***** solution
-      do not makes line breaks, as suggested above! I replaced 
-      Data.Text.concat with Data.Text.unlines, so that line break of the 
-      original documents are preserved.
-
-** parsing
-   :parsing:
-*** dates
-    a date time library must be used here!
-**** DONE SCHEDULED
-**** DONE DEADLINE
-**** DONE CLOSED
-**** DONE LOGBOOK
-     very very similar to properties.
-**** DONE timestamps
-*** parse file headers
-**** DONE FILETAGS
-**** TODO category
-*** DONE PROPERTY parsing stucks
-*** DONE TODO states
-    implementation: if the first word of the title line is written in capital 
-    letters, it is used as state.
-    problems:
-    - it is not used, if it the title consists of only one word.
-    - unresolved issue: e.g. * JSON output. JSON would be a state in that 
-      case.
-
-*** TODO command line
-    a language for expressing filters. So far, in title and content, no spaces 
-    can be inserted. this can be possible by using single quotes. In effect, 
-    the function quotedwords must be implemented correctly. Another problem is 
-    the interpretation of parens inside quotes. A whole new parsing mechanism 
-    would be necessary.
+     filtering, which means allowing spaces in the content search, for which 
+     quotes are necessary, a proper way of line breaks is needed.
 
 ** TODO sorting
 *** TODO certain dates
