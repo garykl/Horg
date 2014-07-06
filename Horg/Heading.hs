@@ -72,6 +72,8 @@ addTags :: S.Set T.Text -> Heading -> Heading
 addTags ts h | S.null ts   = h
              | otherwise   = addTags (S.deleteMin ts) (addTag (S.findMin ts) h)
 
+removeContent :: Heading -> Heading
+removeContent h = h { content = T.empty }
 
 collect :: (Heading -> a) -> Heading -> [a]
 collect c h = c h : concatMap (collect c) (subheadings h)
@@ -85,7 +87,7 @@ collectTags h = S.unions $ collect tags h
 traverse :: (Heading -> Heading) -> Heading -> Heading
 traverse f h =
     let h2 = f h
-    in  h2 { subheadings = map f $ subheadings h2 }
+    in  h2 { subheadings = map (traverse f) $ subheadings h2 }
 
 tagTraverse :: T.Text -> Heading -> Heading
 tagTraverse = traverse . addTag

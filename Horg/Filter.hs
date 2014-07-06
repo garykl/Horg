@@ -6,6 +6,7 @@ import qualified Data.Map as M
 import Data.Time.LocalTime (LocalTime)
 
 import qualified Horg.Heading as Heading
+import Helpers (justFilter)
 -- import qualified Horg.Datetime as DT
 
 
@@ -27,7 +28,8 @@ surface:: Filter -> Heading.Heading -> [Heading.Heading]
 surface f h =
       if checkHeading f h
           then [h]
-          else concatMap (surface f) (Heading.subheadings h)
+          else map (Heading.traverse . Heading.addTags $ Heading.tags h)
+             . concatMap (surface f) $ Heading.subheadings h
 
 
 -- | apply a filter on a heading, when a heading is not filtered out, only its
@@ -38,13 +40,24 @@ deep f h =
       let acc = concatMap (deep f) (Heading.subheadings h)
       in if checkHeading f h
             then [h { Heading.subheadings = acc }]
-            else acc
+            else map (Heading.traverse . Heading.addTags $ Heading.tags h) acc
 
 
 -- | apply a filter on a heading, when a heading matches in an arbitrary
 -- | subheading, it is returned.
+conserve :: Filter -> Heading.Heading -> [Heading.Heading]
+conserve f h = [h | not . null $ surface f h]
+
+
 preserve :: Filter -> Heading.Heading -> [Heading.Heading]
-preserve f h = [h | not . null $ surface f h]
+preserve f h = justFilter [preserve' h]
+  where preserve' :: Heading.Heading -> Maybe Heading.Heading
+        preserve' hh = 
+          let sh = justFilter $ map preserve' $ Heading.subheadings hh
+          in  if null sh
+                then if checkHeading f hh then Just hh
+                             else Nothing
+                else Just $ hh { Heading.subheadings = sh }
 
 idAnd :: Filter
 idAnd = Filter . const $ True
