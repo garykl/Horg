@@ -1,4 +1,4 @@
-module Horg where
+module Main where
 
 import System.Environment (getArgs)
 import qualified Data.Text as T
