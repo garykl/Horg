@@ -1,9 +1,10 @@
 module Horg.Datetime where
 
 import Data.List.Split (splitOn)
+import Data.Time
 import Data.Time.Format (parseTime, formatTime)
 import Data.Time.LocalTime (LocalTime)
-import System.Locale (defaultTimeLocale)
+-- import System.Locale (defaultTimeLocale)
 
 import Helpers ((|>>))
 
@@ -73,7 +74,7 @@ parseDateRange s =
 
 
 parse :: String -> String -> Maybe LocalTime
-parse = parseTime defaultTimeLocale
+parse = parseTimeM True defaultTimeLocale
 
 showLocalTime :: LocalTime -> String
 showLocalTime = formatTime defaultTimeLocale longDateTimeFormat
