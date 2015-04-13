@@ -18,8 +18,9 @@
   =Horg= always prints to standard output. To control the output format, use the =-output= option.
   #+BEGIN_SRC sh
   runhaskell Horg.hs -output=org -- my.org > tmp.org
-  runhaskell Horg.hs -output=dot -- my.org > tmp.dot
+  runhaskell Horg.hs -output=dot -- README.org > tmp.dot
   #+END_SRC
+[[./tmp.svg]]
   The first one of the two commands above, does the exact same thing, as the previous command, but explicitly stated, that =org-mode= output is created. The second command produces the file =tmp.dot=, that can further be processed by the =graphviz= suite for creating graphs, or mind maps. Those graphs contain three kinds of nodes: tags, headings, and contents. When exporting data to a =dot= file, it is often useful, to print the title only, and hide the details of an item. This can be done, by the =nocontent= option:
   #+BEGIN_SRC sh
   runhaskell Horg.hs -output=dot -nocontent -- my.org > tmp.dot
