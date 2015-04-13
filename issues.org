@@ -1,6 +1,6 @@
 #+FILETAGS: :program:haskell:horg:
 * description
-  Horg is program, that reads an aribtrary number of org-mode files, and parses it contents into an internal data structure. Various filters can be applied to that structure, and two (there will be a third one) output formats can be produced: Org-mode and Dot (leter: JSON).
+  Horg is program, that reads an aribtrary number of org-mode files, and parses it contents into an internal data structure. Various filters can be applied to that structure, and two (there will be a third one) output formats can be produced: Org-mode and Dot (later: JSON).
 
 * basic usage
   Horg is a command line tool. You can either compile it with a haskell compiler like GHC, or run it with the =runhaskell= utility. In the latter case, the trivial usage is
@@ -12,7 +12,7 @@
   runhaskell Horg.hs -- my.org > tmp.org
   #+END_SRC
   The two minus signs are important, because everything before that delimiter is interpreted as an option.
-
+  
 * output formats
   =Horg= always prints to standard output. To control the output format, use the =-output= option.
   #+BEGIN_SRC sh
@@ -36,7 +36,7 @@
   #+END_SRC
   lists all =TODO= headings and those, tagged by =neverending= with =study= in the title.
 ** filter structure
-   In an =org-mode= heading structure, a filter can have different meaning. What should be returned, when a filter returns a heading. The heading and all its subheadings could be returned, or only the heading without its subheadings, or all parent headings could be shown as well. In =Horg=, there are four filtering structures provided.
+   In an =org-mode= heading structure, a filter can have different meanings. What should be returned, when a filter returns a heading. The heading and all its subheadings could be returned, or only the heading without its subheadings, or all parent headings could be shown as well. In =Horg=, there are four filtering structures provided.
   #+BEGIN_SRC sh
   runhaskell Horg.hs "tag=filter" -filter=deep -- my.org > tmp.org    # this one is the default
   runhaskell Horg.hs "tag=filter" -filter=surface -- my.org > tmp.org
@@ -131,8 +131,7 @@
 *** TODO content length
 *** TODO properties
 *** TODO multi layer sorting
-    sort for tags in first place. There will be many items per tags, which can 
-    be sorted by another criterion.
+    you may wnat to sort for tags in first place. There will be many items per tags, which can be sorted by another criterion.
 
 **** same criteria for all layers.
 **** different criteria for different layers.

@@ -69,11 +69,11 @@ defaultConf = conf { global = defaultGlobalConf,
 
 
 globalConf :: GlobalConf
-globalConf = GlobalConf Dot LR
+globalConf = GlobalConf Neato LR
 
 
 defaultGlobalConf :: GlobalConf
-defaultGlobalConf = GlobalConf Dot LR
+defaultGlobalConf = GlobalConf Fdp LR
 
 
 nodeConf :: NodeConf

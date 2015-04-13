@@ -17,8 +17,6 @@ import qualified Horg.Heading as Heading
 main :: IO ()
 main = do
 
-    --putStrLn banner
-
     args <- getArgs
     let options = takeWhile (/= "--") $ args
     let filterexpression = unwords $ filter (not . optionsfilter) options
