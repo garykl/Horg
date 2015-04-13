@@ -1,0 +1,56 @@
+
+#+FILETAGS: :program:haskell:horg:
+* description
+  Horg is program, that reads an aribtrary number of org-mode files, and parses it contents into an internal data structure. Various filters can be applied to that structure, and two (there will be a third one) output formats can be produced: Org-mode and Dot (later: JSON).
+
+* basic usage
+  Horg is a command line tool. You can either compile it with a haskell compiler like GHC, or run it with the =runhaskell= utility. In the latter case, the trivial usage is
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs -- my.org
+  #+END_SRC
+  which will generate (hopefully) valid org-mode output to standard out, that should contain the exact same content as =my.org=. Save the output into a file via output redirection, that is provided by your favorite shell.
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs -- my.org > tmp.org
+  #+END_SRC
+  The two minus signs are important, because everything before that delimiter is interpreted as an option.
+  
+* output formats
+  =Horg= always prints to standard output. To control the output format, use the =-output= option.
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs -output=org -- my.org > tmp.org
+  runhaskell Horg.hs -output=dot -- my.org > tmp.dot
+  #+END_SRC
+  The first one of the two commands above, does the exact same thing, as the previous command, but explicitly stated, that =org-mode= output is created. The second command produces the file =tmp.dot=, that can further be processed by the =graphviz= suite for creating graphs, or mind maps. Those graphs contain three kinds of nodes: tags, headings, and contents. When exporting data to a =dot= file, it is often useful, to print the title only, and hide the details of an item. This can be done, by the =nocontent= option:
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs -output=dot -nocontent -- my.org > tmp.dot
+  #+END_SRC
+
+* filtering
+** basic filtering
+  The data of several =org-mode= files can nicely be filtered by different criteria. So far four filters are supported, that can be combined in a sufficiently arbitrary manner. All the filter options must be enclosed in (single or double) quotes. The filters for the title and the content, consist of one single word, if it is contained in the title or content of a heading, it is returned (printed to standard output). There are also matching filters for the state and tags.
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs "content=hedgehog title=animal state=TODO tag=hunting" -- my.org > tmp.org
+  #+END_SRC
+  This command leads to a file =tmp.org=, containing only headings, that, ... I think, it's quite readable. All filter options are combined by a logical =AND=. A logical =OR= can be inserted between arbitrary filter statements, with the rule, that =AND= binds tighter than =OR=.
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs "state=TODO OR tag=neverending title=study" -- my.org > tmp.org
+  #+END_SRC
+  lists all =TODO= headings and those, tagged by =neverending= with =study= in the title.
+** filter structure
+   In an =org-mode= heading structure, a filter can have different meanings. What should be returned, when a filter returns a heading. The heading and all its subheadings could be returned, or only the heading without its subheadings, or all parent headings could be shown as well. In =Horg=, there are four filtering structures provided.
+  #+BEGIN_SRC sh
+  runhaskell Horg.hs "tag=filter" -filter=deep -- my.org > tmp.org    # this one is the default
+  runhaskell Horg.hs "tag=filter" -filter=surface -- my.org > tmp.org
+  runhaskell Horg.hs "tag=filter" -filter=conserve -- my.org > tmp.org
+  runhaskell Horg.hs "tag=filter" -filter=preserve -- my.org > tmp.org
+  #+END_SRC
+*** conserve filter
+    If an arbitrary subheading or the heading itself of a heading matches the filter, the whole heading with all its subheadings is returned.
+*** preserve filter
+    When a heading matches, no subheadings are shown (except if they match), but all its parent headings. This one is great for finding where this heading is from (after a complicated search)
+*** surface filter
+    When a heading matches, it is returned with all its subheadings
+*** deep filter
+    Only matching heading are returned without their children or parents, except their children or parent are matching, too. If subheadings, more than one level deeper than their matching ancestors, match, the returned heading tree is compressed, leaving out the non matching uncles and aunts.
+
+
