@@ -1,82 +1,90 @@
 * library
-** Heading
-*** purpose
-    provides the data structure, in which the information of a Heading of an 
-    Org-mode file is saved. It is recursive due to subheadings.
-*** traversal function
+
+** Heading is the primary structure
+
+    provides the data structure, in which the information of a Heading
+    of an Org-mode file is saved. It is recursive due to
+    subheadings. So, an orgmode file basically is a list of
+    headings. Each haeding can have content which should be organized
+    as a list of paragraphs.
+
+*** TODO enhance content
+
+convert the content from Text to [Text]
+
+
+
 ** Filter
-*** DONE title
-    search for infixes
-*** DONE content
-    search for infixes
-*** DONE tags
-    search for exact matches
-*** DONE state
-    search for exact matches
-*** kinds of filters
-    there are three kinds of filters I can think of:
-    - [X] deep (filters out everything, including the subtrees)
-    - [X] surface (keep all subtrees of a non filtered out heading)
-    - [X] conserve (conserves the tree structure completely)
-**** DONE propagate tags
-     the deep and surface filters should propagate their tags to its children 
-     being filtered out.
-*** range or half range of dates
+
+*** TODO tag filter seems buggy
+
+search for exact matches.
+
+
+*** TODO range or half range of dates
+
     - [ ] all dates
     - [ ] deadlines
     - [ ] scheduled
     - [ ] timestamps
+
+
 ** Output
-*** JSON										     :json:
-*** DOT										 :graphviz:
-    the collect function may also be used for generating all the edges and 
-    nodes, needed for graphviz input.
-**** DONE get all used tags in a heading
-     the collect function was used for that purpose.
-**** DONE newline behavior
-     of the dot program
-**** DONE node style
-     different node styles for different kinds of nodes
-     - header: box
-     - tag: ellipse
-     - content: note
-**** DONE sophisticated configuration
-***** DONE visual configuration
-      shapes, arrows and colors. Everything is packed inside records.
+
+*** json                                                               :json:
+
+*** dot                                                            :graphviz:
+
+**** TODO visual configuration[1/2]
+
+- [X] node configuration
+- [ ] edge configuration
+
+
 **** Nodes
+
      - [X] header
      - [X] content
      - [X] tag
      - [ ] (categories)
      - [ ] (certain properties)
+
+
 **** Edges
      - [X] header to subheader
      - [X] tag to header
      - [X] header to content
      - [ ] (category to header)
      - [ ] (header to certain property)
+
+
 *** Org-Mode
+
     Using the the functionality of =modifying=, custom reports may be created 
     and saved in other org-mode files. For example filtering with respect to 
     some =property=. An application could be, to have a giant org-mode file, 
     containing the logging of a program creation, with feature descriptions, 
     issue tracking, also finished issues. A README file or an TODO file can 
     then be provided.
-**** TODO showContent
-     must be modified in a way, such that line break occur only at spaces and 
-     line length does not exceed 80 chars.
-     The following solution is a nice workaround, but for sophisticated 
-     filtering, which means allowing spaces in the content search, for which 
-     quotes are necessary, a proper way of line breaks is needed.
+
 
 ** TODO sorting
+
 *** TODO certain dates
+
 *** TODO title?
+
 *** TODO tags
+
 *** TODO content length
+
 *** TODO properties
+
 *** TODO multi layer sorting
+
     you may wnat to sort for tags in first place. There will be many items per tags, which can be sorted by another criterion.
 
+
 **** same criteria for all layers.
+
 **** different criteria for different layers.
